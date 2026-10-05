@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import UserProfile from "./UserProfile/UserProfile";
+import Link from "next/link";
 
 const recentEvents = [
   {
@@ -177,17 +179,39 @@ export default function Dashboard() {
             </div>
           </div>
 
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <Link
+              href="/dashboard"
+              className="rounded-lg border border-cyan-500/30 bg-cyan-500/5 px-3 py-2 text-xs font-semibold text-cyan-400 transition hover:bg-cyan-500/10"
+            >
+              Overview
+            </Link>
+
+            <Link
+              href="/dashboard/incidents"
+              className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-400 transition hover:border-cyan-500/30 hover:text-cyan-400"
+            >
+              Incidents
+            </Link>
+
+            <Link
+              href="/dashboard/events"
+              className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-400 transition hover:border-cyan-500/30 hover:text-cyan-400"
+            >
+              Security Events
+            </Link>
+
+            <Link
+              href="/dashboard/mitre"
+              className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-400 transition hover:border-cyan-500/30 hover:text-cyan-400"
+            >
+              MITRE ATT&CK
+            </Link>
+          </div>
+
           <div className="flex items-center gap-5">
 
-            <div className="hidden text-right sm:block">
-              <p className="text-sm font-medium">
-                SOC Analyst
-              </p>
-
-              <p className="text-xs text-slate-500">
-                analyst@example.com
-              </p>
-            </div>
+            <UserProfile />
 
             <div className="flex items-center gap-2">
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
@@ -218,24 +242,39 @@ export default function Dashboard() {
         {/* KPI Cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-xl border border-slate-800 bg-slate-900 p-5"
-            >
-              <p className="text-sm text-slate-500">
-                {stat.label}
-              </p>
+          {stats.map((stat) => {
+            const card = (
+              <div
+                className="rounded-xl border border-slate-800 bg-slate-900 p-5 transition hover:border-cyan-500/40 hover:bg-slate-900/80"
+              >
+                <p className="text-sm text-slate-500">
+                  {stat.label}
+                </p>
 
-              <p className="mt-3 text-3xl font-bold">
-                {stat.value}
-              </p>
+                <p className="mt-3 text-3xl font-bold">
+                  {stat.value}
+                </p>
 
-              <p className="mt-2 text-xs text-emerald-400">
-                Last 24 hours
-              </p>
-            </div>
-          ))}
+                <p className="mt-2 text-xs text-emerald-400">
+                  Last 24 hours
+                </p>
+              </div>
+            );
+
+            return stat.label === "Open Incidents" ? (
+              <Link
+                key={stat.label}
+                href="/dashboard/incidents"
+                className="group block"
+              >
+                {card}
+              </Link>
+            ) : (
+              <div key={stat.label}>
+                {card}
+              </div>
+            );
+          })}
 
         </div>
 
@@ -374,28 +413,37 @@ export default function Dashboard() {
             <div className="mt-5 space-y-3">
 
               {topIPs.map((item, index) => (
-                <div
+                <Link
                   key={item.ip}
-                  className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950 px-4 py-3"
+                  href={`/dashboard/source-ip/${encodeURIComponent(item.ip)}`}
+                  className="group flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 transition hover:border-cyan-500/40 hover:bg-slate-900"
                 >
-
-                  <div className="flex items-center gap-4">
-
-                    <span className="w-5 text-xs text-slate-600">
+                  <div className="flex items-center gap-3">
+                    <span className="w-6 text-xs text-slate-600">
                       {index + 1}
                     </span>
 
-                    <span className="font-mono text-sm text-slate-300">
-                      {item.ip}
-                    </span>
+                    <div>
+                      <p className="font-mono text-sm text-slate-300 transition group-hover:text-cyan-400">
+                        {item.ip}
+                      </p>
 
+                      <p className="mt-1 text-xs text-slate-600">
+                        SSH authentication attempts
+                      </p>
+                    </div>
                   </div>
 
-                  <span className="rounded-md bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-400">
-                    {item.attempts}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-sm font-semibold text-slate-300">
+                      {item.attempts}
+                    </span>
 
-                </div>
+                    <span className="text-slate-700 transition group-hover:text-cyan-400">
+                      →
+                    </span>
+                  </div>
+                </Link>
               ))}
 
             </div>
