@@ -83,7 +83,7 @@ export default function MitrePage() {
 
         const data = await response.json();
 
-        setDetections(data.detections || []);
+        setDetections(data.data || []);
       } catch (err) {
         console.error(err);
         setError("Unable to load MITRE ATT&CK data.");

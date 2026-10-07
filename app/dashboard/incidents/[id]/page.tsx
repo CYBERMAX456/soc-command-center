@@ -96,7 +96,7 @@ export default function IncidentInvestigationPage({
       try {
         const { id } = await params;
 
-        const response = await fetch(`/api/security/incidents/${id}`);
+        const response = await fetch(`/api/security/incident/${id}`);
 
         if (!response.ok) {
           throw new Error("Failed to load incident");
